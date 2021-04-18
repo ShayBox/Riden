@@ -7,6 +7,15 @@ There's getters and setters for everything but M0-9 V/I/OVP/OCP.
 The `update` function will update `Riden` class properties 4-41, the rest require using getters.  
 This is to help with performance when polling commonly used variables like voltage/current.  
 
+#### Install
+```
+git clone https://github.com/ShayBox/Riden.git
+cd Riden
+python setup.py install --user
+```
+
+#### Usage
+
 ```py
 from riden import Riden
 r = Riden("/dev/ttyUSB0")
@@ -22,8 +31,6 @@ r.update()
 r.voltage_set
 r.current_set
 ```
-
-Feel free to pull-request!
 
 #### List of Modbus RTU instructions
 | Reg ID | Description                             |   |
