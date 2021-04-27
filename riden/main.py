@@ -36,13 +36,13 @@ class Riden:
         except ModbusInvalidResponseError:
             return self.read_multiple(register, length)
 
-    def write(self, register: int, value: int):
+    def write(self, register: int, value: int) -> int:
         try:
-            return self.master.execute(self.address, WRITE_SINGLE_REGISTER, register, output_value=value)
+            return self.master.execute(self.address, WRITE_SINGLE_REGISTER, register, output_value=value)[1]
         except ModbusInvalidResponseError:
             return self.write(register, value)
 
-    def write_multiple(self, register: int, values: tuple):
+    def write_multiple(self, register: int, values: tuple) -> tuple:
         try:
             return self.master.execute(self.address, WRITE_MULTIPLE_REGISTERS, register, output_value=values)
         except ModbusInvalidResponseError:
@@ -99,9 +99,9 @@ class Riden:
         self.voltage_set = voltage / self.voltage_multiple
         return self.voltage_set
 
-    def set_voltage_set(self, value: float):
+    def set_voltage_set(self, value: float) -> float:
         voltage = value * self.voltage_multiple
-        return self.write(C.V_SET, int(voltage))
+        return self.write(C.V_SET, int(voltage)) / self.voltage_multiple
 
     def get_current_set(self, current: int = None) -> float:
         if current is None:
@@ -110,9 +110,9 @@ class Riden:
         self.current_set = current / self.current_multiple
         return self.current_set
 
-    def set_current_set(self, value: float):
+    def set_current_set(self, value: float) -> float:
         current = value * self.current_multiple
-        return self.write(C.I_SET, int(current))
+        return self.write(C.I_SET, int(current)) / self.current_multiple
 
     def get_voltage(self, voltage: int = None) -> float:
         if voltage is None:
