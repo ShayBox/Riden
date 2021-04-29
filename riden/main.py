@@ -100,8 +100,8 @@ class Riden:
         return self.voltage_set
 
     def set_voltage_set(self, value: float) -> float:
-        voltage = value * self.voltage_multiple
-        return self.write(C.V_SET, int(voltage)) / self.voltage_multiple
+        voltage = round(value * self.voltage_multiple)
+        return self.write(C.V_SET, int(voltage))
 
     def get_current_set(self, current: int = None) -> float:
         if current is None:
@@ -111,8 +111,8 @@ class Riden:
         return self.current_set
 
     def set_current_set(self, value: float) -> float:
-        current = value * self.current_multiple
-        return self.write(C.I_SET, int(current)) / self.current_multiple
+        current = round(value * self.current_multiple)
+        return self.write(C.I_SET, int(current))
 
     def get_voltage(self, voltage: int = None) -> float:
         if voltage is None:
