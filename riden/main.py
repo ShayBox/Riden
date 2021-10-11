@@ -19,11 +19,16 @@ class Riden:
         self.fw = self.read(C.FW) / 100
         self.type = self.id // 10
         self.voltage_multiple = 100
+        self.input_voltage_multiple = 100
+        self.power_multiple = 100
         if self.type == 6012 or self.type == 6018:
             self.current_multiple = 100
         else:
             self.current_multiple = 1000
-
+        if self.id == 60065:
+            self.voltage_multiple = 1000
+            self.current_multiple = 10000
+            self.power_multiple = 1000
     def read(self, register: int) -> int:
         try:
             return self.master.execute(self.address, READ_HOLDING_REGISTERS, register, 1)[0]
@@ -132,14 +137,14 @@ class Riden:
         if power is None:
             power = self.read(C.POWER)
 
-        self.power = power / 100
+        self.power = power / self.power_multiple
         return self.power
 
     def get_voltage_input(self, voltage: int = None) -> float:
         if voltage is None:
             voltage = self.read(C.V_INPUT)
 
-        self.voltage_input = voltage / self.voltage_multiple
+        self.voltage_input = voltage / self.input_voltage_multiple
         return self.voltage_input
 
     def is_keypad_lock(self, keypad: int = None) -> bool:
