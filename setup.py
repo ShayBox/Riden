@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="riden",
-    version="0.1.1",
+    version="0.1.2",
     description="A python library for Riden RD6006-RD6018 power supplies",
     url="https://github.com/ShayBox/Riden.git",
     license="MIT",

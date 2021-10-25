@@ -15,20 +15,27 @@ class Riden:
         self.master = RtuMaster(self.serial)
         self.master.set_timeout(5)
         self.id = self.read(C.ID)
-        self.sn = str(self.read(C.SN_HIGH) << 16 | self.read(C.SN_LOW)) + ":08d"
+        self.sn = "%08d" % (self.read(C.SN_HIGH) << 16 | self.read(C.SN_LOW))
         self.fw = self.read(C.FW) / 100
-        self.type = self.id // 10
-        self.voltage_multiple = 100
-        self.input_voltage_multiple = 100
-        self.power_multiple = 100
-        if self.type == 6012 or self.type == 6018:
-            self.current_multiple = 100
-        else:
-            self.current_multiple = 1000
-        if self.id == 60065:
-            self.voltage_multiple = 1000
-            self.current_multiple = 10000
-            self.power_multiple = 1000
+
+        self.voltage_multiplier = 100
+        self.current_multiplier = 100
+        self.power_multiplier = 100
+        self.input_voltage_multiplier = 100
+
+        if 60180 <= self.id <= 60189:
+            self.type = "RD6018"
+        elif 60120 <= self.id <= 60129:
+            self.type = "RD6012"
+        elif 60060 <= self.id <= 60064:
+            self.type = "RD6006"
+            self.current_multiplier = 1000
+        elif self.id == 60065:
+            self.type = "RD6006P"
+            self.voltage_multiplier = 1000
+            self.current_multiplier = 10000
+            self.power_multiplier = 1000
+
     def read(self, register: int) -> int:
         try:
             return self.master.execute(self.address, READ_HOLDING_REGISTERS, register, 1)[0]
@@ -101,50 +108,50 @@ class Riden:
         if voltage is None:
             voltage = self.read(C.V_SET)
 
-        self.voltage_set = voltage / self.voltage_multiple
+        self.voltage_set = voltage / self.voltage_multiplier
         return self.voltage_set
 
     def set_voltage_set(self, value: float) -> float:
-        voltage = round(value * self.voltage_multiple)
+        voltage = round(value * self.voltage_multiplier)
         return self.write(C.V_SET, int(voltage))
 
     def get_current_set(self, current: int = None) -> float:
         if current is None:
             current = self.read(C.I_SET)
 
-        self.current_set = current / self.current_multiple
+        self.current_set = current / self.current_multiplier
         return self.current_set
 
     def set_current_set(self, value: float) -> float:
-        current = round(value * self.current_multiple)
+        current = round(value * self.current_multiplier)
         return self.write(C.I_SET, int(current))
 
     def get_voltage(self, voltage: int = None) -> float:
         if voltage is None:
             voltage = self.read(C.V_DISPLAY)
 
-        self.voltage = voltage / self.voltage_multiple
+        self.voltage = voltage / self.voltage_multiplier
         return self.voltage
 
     def get_current(self, current: int = None) -> float:
         if current is None:
             current = self.read(C.I_DISPLAY)
 
-        self.current = current / self.current_multiple
+        self.current = current / self.current_multiplier
         return self.current
 
     def get_power(self, power: int = None) -> float:
         if power is None:
             power = self.read(C.POWER)
 
-        self.power = power / self.power_multiple
+        self.power = power / self.power_multiplier
         return self.power
 
     def get_voltage_input(self, voltage: int = None) -> float:
         if voltage is None:
             voltage = self.read(C.V_INPUT)
 
-        self.voltage_input = voltage / self.input_voltage_multiple
+        self.voltage_input = voltage / self.input_voltage_multiplier
         return self.voltage_input
 
     def is_keypad_lock(self, keypad: int = None) -> bool:
@@ -210,7 +217,7 @@ class Riden:
         if voltage is None:
             voltage = self.read(C.BAT_VOLTAGE)
 
-        self.battery_voltage = voltage / self.voltage_multiple
+        self.battery_voltage = voltage / self.voltage_multiplier
         return self.battery_voltage
 
     def get_ext_temp_c(self, sign: int = None, temp: int = None) -> int:
