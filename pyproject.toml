@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "Riden"
+version = "0.2.0"
+description = "A python library for Riden RD6006-RD6018 power supplies"
+license = "MIT"
+authors = ["Shayne Hartford <shaybox@shaybox.com>"]
+homepage = "https://github.com/ShayBox/Riden"
+repository = "https://github.com/ShayBox/Riden.git"
+
+[tool.poetry.dependencies]
+modbus_tk = "^1.1.2"
+pyserial = "^3.5"
+python = ">=3.6.2,<4.0"
+
+[tool.poetry.dev-dependencies]
+black = { version = "^21.11b1", allow-prereleases = true }
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
