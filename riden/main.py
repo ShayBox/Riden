@@ -1,31 +1,42 @@
 from datetime import datetime
+
 from modbus_tk.defines import (
     READ_HOLDING_REGISTERS,
-    WRITE_SINGLE_REGISTER,
     WRITE_MULTIPLE_REGISTERS,
+    WRITE_SINGLE_REGISTER,
 )
 from modbus_tk.exceptions import ModbusInvalidResponseError
 from modbus_tk.modbus_rtu import RtuMaster
-from riden import registers as R
 from serial import Serial
+
+from riden import registers as R
 
 
 class Riden:
-    def __init__(self, port="/dev/ttyUSB0", baudrate=115200, address=1):
-        self.port = port
-        self.baudrate = baudrate
-        self.address = address
-        self.serial = Serial(port, baudrate)
-        self.master = RtuMaster(self.serial)
-        self.master.set_timeout(5)
-        self.id = self.read(R.ID)
-        self.sn = "%08d" % (self.read(R.SN_HIGH) << 16 | self.read(R.SN_LOW))
-        self.fw = self.read(R.FW) / 100
+    def __init__(
+        self,
+        port: str = "/dev/ttyUSB0",
+        baudrate: int = 115200,
+        address: int = 1,
+    ):
+        self.port: str = port
+        self.baudrate: int = baudrate
+        self.address: int = address
 
-        self.voltage_multiplier = 100
-        self.current_multiplier = 100
-        self.power_multiplier = 100
-        self.input_voltage_multiplier = 100
+        self.serial: Serial = Serial(port, baudrate)
+        self.master: RtuMaster = RtuMaster(self.serial)
+        self.master.set_timeout(5)
+
+        self.id: int = self.read(R.ID)
+        self.sn: str = "%08d" % (
+            self.read(R.SN_HIGH) << 16 | self.read(R.SN_LOW)
+        )
+        self.fw: float = self.read(R.FW) / 100
+        self.type: str = None
+        self.voltage_multiplier: int = 100
+        self.current_multiplier: int = 100
+        self.power_multiplier: int = 100
+        self.input_voltage_multiplier: int = 100
 
         if 60180 <= self.id <= 60189:
             self.type = "RD6018"
@@ -39,6 +50,28 @@ class Riden:
             self.voltage_multiplier = 1000
             self.current_multiplier = 10000
             self.power_multiplier = 1000
+
+        self.int_temp_c: int = None
+        self.int_temp_f: int = None
+        self.voltage_set: float = None
+        self.current_set: float = None
+        self.voltage: float = None
+        self.current: float = None
+        self.power: float = None
+        self.voltage_input: float = None
+        self.keypad_lock: bool = None
+        self.protection: int = None
+        self.protection_string: str = None
+        self.constant: int = None
+        self.constant_string: str = None
+        self.output: bool = None
+        self.preset: int = None
+        self.battery_mode: int = None
+        self.battery_voltage: float = None
+        self.ext_temp_c: int = None
+        self.ext_temp_f: int = None
+        self.amperehour: float = None
+        self.watthour: float = None
 
     def read(self, register: int) -> int:
         try:
@@ -59,7 +92,10 @@ class Riden:
     def write(self, register: int, value: int) -> int:
         try:
             return self.master.execute(
-                self.address, WRITE_SINGLE_REGISTER, register, output_value=value
+                self.address,
+                WRITE_SINGLE_REGISTER,
+                register,
+                output_value=value,
             )[1]
         except ModbusInvalidResponseError:
             return self.write(register, value)
@@ -67,7 +103,10 @@ class Riden:
     def write_multiple(self, register: int, values: tuple) -> tuple:
         try:
             return self.master.execute(
-                self.address, WRITE_MULTIPLE_REGISTERS, register, output_value=values
+                self.address,
+                WRITE_MULTIPLE_REGISTERS,
+                register,
+                output_value=values,
             )
         except ModbusInvalidResponseError:
             return self.write_multiple(register, values)
