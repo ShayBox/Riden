@@ -1,5 +1,5 @@
 # Riden
-A python library for Riden RD6006-RD6018 power supplies
+A python library for Riden RD60XX power supplies
 
 This is based on [Baldanos/rd6006](https://github.com/Baldanos/rd6006)
 

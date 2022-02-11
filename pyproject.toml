@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Riden"
-version = "0.2.0"
+version = "0.2.1"
 description = "A python library for Riden RD60XX power supplies"
 license = "MIT"
 authors = ["Shayne Hartford <shaybox@shaybox.com>"]
@@ -16,5 +16,5 @@ python = ">=3.6.2,<4.0"
 black = "^22.1.0"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["setuptools", "poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
