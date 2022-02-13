@@ -1,43 +1,76 @@
 # Riden
-A python library for Riden RD60XX power supplies
 
-This is based on [Baldanos/rd6006](https://github.com/Baldanos/rd6006)
+A python library for Riden RD power supplies  
+This library is based on [Baldanos/rd6006](https://github.com/Baldanos/rd6006)
 
-There's getters and setters for everything but M0-9 V/I/OVP/OCP.  
-The `update` function will update `Riden` class properties 4-41, the rest require using getters.  
-This is to help with performance when polling commonly used variables like voltage/current.  
+#### Installation
+Requirements:
+- [Python] 3.7 or later
+```
+$ pip install --user git+https://github.com/shaybox/riden.git
+```
 
-#### Install with pip
+Adding to an existing poetry project:
 ```
-git clone https://github.com/ShayBox/Riden.git
-cd Riden
-poetry build
-pip install --user dist/*.tar.gz
-```
-#### Add to Poetry Project
-```
-poetry add git+https://github.com/shaybox/riden.git
+$ poetry add git+https://github.com/shaybox/riden.git
 ```
 
 #### Usage
-
-```py
+There's a script to print out basic information about the power supply:
+```
+$ riden --port=/dev/ttyUSB0 --baudrate 115200
+ID      : 60181
+SN      : 00011608
+FW      : 136
+TYPE    : RD6018
+INT_C   : 29
+INT_F   : 84
+V_SET   : 0.0
+I_SET   : 0.0
+V_OUT   : 0.0
+I_OUT   : 0.0
+P_OUT   : 0.0
+V_IN    : 68.07
+KEYPAD  : False
+OVP_OCP : None
+CV_CC   : CV
+OUTPUT  : False
+PRESET  : 0
+BAT_MODE: False
+V_BAT   : 0.0
+EXT_C   : -89
+EXT_F   : -128
+AH      : 0.0
+WH      : 0.0
+DATETIME: 2022-02-13 11:26:02
+TAKE_OK : True
+TAKE_OUT: False
+BOOT_POW: False
+BUZZ    : False
+LOGO    : False
+LANG    : 0
+LIGHT   : 5
+```
+```python
 from riden import Riden
-r = Riden("/dev/ttyUSB0")
 
-# Getters
-r.get_voltage_set()
+# These are the default values for port and baudrate
+r = Riden(port="/dev/ttyUSB0", baudrate=115200)
 
-# Setters
-r.set_voltage_set(3.33)
+# Getters and Setters are available
+print(r.get_v_set())
+print(r.get_i_set())
+r.set_v_set(4.20)
+r.set_i_set(0.50)
 
-# Polling (Recommended for accessing many variables)
+# Mass polling is available as well
+# This reduces the number of reads to the device
 r.update()
-r.voltage_set
-r.current_set
+print(r.v_set)
+print(r.i_set)
 ```
 
-#### List of Modbus RTU instructions
+#### [List of Modbus RTU registers](https://github.com/Baldanos/rd6006/blob/master/registers.md)
 | Reg ID | Description                             |   |
 |--------|-----------------------------------------|---|
 | 0      | ID                                      |   |
@@ -131,3 +164,6 @@ r.current_set
 | 117    | M9 A                                    |   |
 | 118    | M9 OVP                                  |   |
 | 119    | M9 OCP                                  |   |
+
+[Python]: https://python.org
+[Poetry]: https://python-poetry.org

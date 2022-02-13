@@ -1,2 +1,2 @@
-from .main import Riden
-from .registers import *
+from .register import Register
+from .riden import Riden
