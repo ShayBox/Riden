@@ -54,8 +54,8 @@ LIGHT   : 5
 ```python
 from riden import Riden
 
-# These are the default values for port and baudrate
-r = Riden(port="/dev/ttyUSB0", baudrate=115200)
+# These are the default values for port, baudrate, and address
+r = Riden(port="/dev/ttyUSB0", baudrate=115200, address=1)
 
 # Getters and Setters are available
 print(r.get_v_set())
@@ -68,6 +68,18 @@ r.set_i_set(0.50)
 r.update()
 print(r.v_set)
 print(r.i_set)
+```
+
+There's also a `Bootloader` class that can be used to update the firmware.  
+This is based on [tjko/riden-flashrool](https://github.com/tjko/riden-flashtool)
+```
+$ riden --port=/dev/ttyUSB0 --baudrate 115200 --firmware path/to/firmware.bin
+```
+```python
+from riden import Bootloader
+# Address is only required to reboot the device into bootloader mode via modbus
+# These values are the defaults
+Bootloader(port="/dev/ttyUSB0", baudrate=115200, address=1).flash("path/to/firmware.bin")
 ```
 
 #### [List of Modbus RTU registers](https://github.com/Baldanos/rd6006/blob/master/registers.md)
@@ -164,6 +176,6 @@ print(r.i_set)
 | 117    | M9 A                                    |   |
 | 118    | M9 OVP                                  |   |
 | 119    | M9 OCP                                  |   |
+| 256    | SYSTEM                                  |   |
 
 [Python]: https://python.org
-[Poetry]: https://python-poetry.org

@@ -103,3 +103,7 @@ class Register:
     M9_I = 117
     M9_OVP = 118
     M9_OCP = 119
+    # Unused/Unknown 120-255
+    SYSTEM = 256
+    # NOT REGISTERS - Magic numbers for the registers
+    BOOTLOADER = 5633

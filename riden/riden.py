@@ -12,7 +12,7 @@ from modbus_tk.modbus_rtu import RtuMaster
 from serial import Serial
 
 # Local modules
-from riden import Register as R
+from .register import Register as R
 
 
 class Riden:
@@ -303,3 +303,9 @@ class Riden:
     def set_light(self, light: int) -> int:
         self.light = light
         return self.write(R.OPT_LIGHT, self.light)
+
+    def reboot_bootloader(self) -> None:
+        try:
+            self.write(R.SYSTEM, R.BOOTLOADER)
+        except ModbusInvalidResponseError:
+            pass
