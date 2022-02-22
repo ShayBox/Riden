@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Riden"
-version = "1.1.0"
+version = "1.1.1"
 description = "A python library for Riden RD power supplies"
 license = "MIT"
 authors = ["Shayne Hartford <shaybox@shaybox.com>"]

@@ -64,14 +64,20 @@ class Riden:
             return self.read(register, length)
 
     def write(self, register: int, value: int) -> int:
-        return self.master.execute(
-            self.address, WRITE_SINGLE_REGISTER, register, 1, value
-        )[0]
+        try:
+            return self.master.execute(
+                self.address, WRITE_SINGLE_REGISTER, register, 1, value
+            )[0]
+        except ModbusInvalidResponseError:
+            return self.write(register, value)
 
     def write_multiple(self, register: int, values: tuple or list) -> tuple:
-        return self.master.execute(
-            self.address, WRITE_MULTIPLE_REGISTERS, register, 1, values
-        )
+        try:
+            return self.master.execute(
+                self.address, WRITE_MULTIPLE_REGISTERS, register, 1, values
+            )
+        except ModbusInvalidResponseError:
+            return self.write_multiple(register, values)
 
     def init(self) -> None:
         data = self.read(R.ID, R.FW + 1)
