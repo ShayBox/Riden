@@ -2,6 +2,7 @@
 from datetime import datetime
 
 # Third-party modules
+from modbus_tk import hooks
 from modbus_tk.defines import (
     READ_HOLDING_REGISTERS,
     WRITE_MULTIPLE_REGISTERS,
@@ -23,6 +24,7 @@ class Riden:
         address: int = 1,
         serial: Serial = None,
         master: RtuMaster = None,
+        close_after_call: bool = False,
     ):
         self.address = address
         self.serial = serial or Serial(port, baudrate)
@@ -31,6 +33,16 @@ class Riden:
         # Fixes "Response length is invalid 0" error
         # If you experience this error, try changing your baudrate
         self.master.set_timeout(0.05)
+
+        # Windows requires opening/closing the com port after each call
+        # This is a workaround that will drasticly reduce performance
+        if close_after_call:
+            hooks.install_hook(
+                "modbus_rtu.RtuMaster.before_send", lambda self: self._do_open()
+            )
+            hooks.install_hook(
+                "modbus_rtu.RtuMaster.after_recv", lambda self: self._do_close()
+            )
 
         self.init()
 
