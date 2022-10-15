@@ -4,14 +4,14 @@ A python library for Riden RD power supplies
 This library is based on [Baldanos/rd6006](https://github.com/Baldanos/rd6006)
 
 #### Custom Firmware
-It appears Ruiden has changed something in recent stock firmware versions that breaks modbus communication.  
+It appears Ruiden has changed something in recent stock firmware versions that may break modbus communication.  
 I would recommend using UniSoft's custom firmware which is based on older stock firmware, but adds many, many new features.  
-This is the reference document for the Custom [Firmware], it includes instructions on where to download and how to flash it.  
-You could also try downloading older stock firmware and flashing it, I don't know where to get those firmware versions.
 
 #### Installation
-Requirements:
+Optional:
 - [Firmware] UniSoft's custom firmware
+
+Requirements:
 - [Python] 3.7 or later
 ```
 $ pip install --user git+https://github.com/shaybox/riden.git
