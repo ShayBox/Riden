@@ -53,5 +53,25 @@ def main(port: str, baudrate: int, address: int, firmware):
             print(f"{key}: {value}")
 
 
+@click.command()
+@click.option("-p", "--port", default="/dev/ttyUSB0", help="Serial port")
+@click.option("-b", "--baudrate", default=115200, help="Serial baudrate")
+@click.option("-a", "--address", default=1, help="Modbus address")
+def dump_regs(port: str, baudrate: int, address: int):
+    from .register import Register
+
+    names = {
+        v: k for (k, v) in Register.__dict__.items() if not k.startswith("_")
+    }
+    max_length = max(len(k) for k in names.values())
+
+    r = Riden(port, baudrate, address)
+
+    for i in range(256):
+        value = r.read(i)
+        name = names.get(i, "").rjust(max_length)
+        print(f"{name} {i:03d}: {value}")
+
+
 if __name__ == "__main__":
     main()
