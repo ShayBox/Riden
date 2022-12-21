@@ -53,8 +53,13 @@ class Riden:
 
         if 60180 <= self.id <= 60189:
             self.type = "RD6018"
-        elif 60120 <= self.id <= 60129:
+        elif 60120 <= self.id <= 60124:
             self.type = "RD6012"
+        elif 60125 <= self.id <= 60129:
+            self.type = "RD6012P"
+            self.v_multi = 1000
+            self.p_multi = 1000
+            # i_multi is not constant!
         elif 60060 <= self.id <= 60064:
             self.type = "RD6006"
             self.i_multi = 1000
@@ -113,7 +118,12 @@ class Riden:
 
     def update(self) -> None:
         data = (None,) * 4  # Fix offset - Init registers
-        data += self.read(R.INT_C_S, (R.PRESET - R.INT_C_S) + 1)
+        data += self.read(R.INT_C_S, (R.I_RANGE - R.INT_C_S) + 1)
+        if self.type == "RD6012P":
+            if data[R.I_RANGE] == 0:
+                self.i_multi = 10000
+            else:
+                self.i_multi = 1000
         self.get_int_c(data[R.INT_C_S], data[R.INT_C])
         self.get_int_f(data[R.INT_F_S], data[R.INT_F])
         self.get_v_set(data[R.V_SET])
@@ -127,7 +137,7 @@ class Riden:
         self.get_cv_cc(data[R.CV_CC])
         self.is_output(data[R.OUTPUT])
         self.get_preset(data[R.PRESET])
-        data += (None,) * 12  # Fix offset - Unused/Unknown registers
+        data += (None,) * 11  # Fix offset - Unused/Unknown registers
         data += self.read(R.BAT_MODE, (R.WH_L - R.BAT_MODE) + 1)
         self.is_bat_mode(data[R.BAT_MODE])
         self.get_v_bat(data[R.V_BAT])
