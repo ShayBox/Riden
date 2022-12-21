@@ -21,7 +21,8 @@ class Register:
     CV_CC = 17
     OUTPUT = 18
     PRESET = 19
-    # Unused/Unknown 20-31
+    I_RANGE = 20  # Used on RD6012p
+    # Unused/Unknown 21-31
     BAT_MODE = 32
     V_BAT = 33
     EXT_C_S = 34

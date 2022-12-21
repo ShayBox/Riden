@@ -112,6 +112,7 @@ Bootloader(port="/dev/ttyUSB0", baudrate=115200, address=1).flash("path/to/firmw
 | 17     | CV/CC (0=CV, 1=CC)                      |   |
 | 18     | Output enable                           |   |
 | 19     | Change preset                           |   |
+| 20     | Current range (On RD6012p 0=6A, 1=12A)  |   |
 | 32     | Battery mode active                     |   |
 | 33     | Battery voltage                         |   |
 | 34     | External temperature °c sign (0=+, 1=-) |   |
