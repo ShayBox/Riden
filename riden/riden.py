@@ -25,6 +25,7 @@ class Riden:
         serial: Serial = None,
         master: RtuMaster = None,
         close_after_call: bool = False,
+        timeout: float = 0.5,
     ):
         self.address = address
         self.serial = serial or Serial(port, baudrate)
@@ -32,7 +33,7 @@ class Riden:
 
         # Fixes "Response length is invalid 0" error
         # If you experience this error, try changing your baudrate
-        self.master.set_timeout(0.05)
+        self.master.set_timeout(timeout)
 
         # Windows requires opening/closing the com port after each call
         # This is a workaround that will drasticly reduce performance
@@ -51,7 +52,9 @@ class Riden:
         self.p_multi = 100
         self.v_in_multi = 100
 
-        if 60180 <= self.id <= 60189:
+        if 60241 <= self.id:
+            self.type = "RD6024"
+        elif 60180 <= self.id <= 60189:
             self.type = "RD6018"
         elif 60120 <= self.id <= 60124:
             self.type = "RD6012"
