@@ -6,6 +6,10 @@ license = "MIT"
 authors = ["Shayne Hartford <shaybox@shaybox.com>"]
 homepage = "https://github.com/ShayBox/Riden"
 repository = "https://github.com/ShayBox/Riden.git"
+packages = [
+  {include = "riden"},
+  {include = "riden/py.typed"},
+]
 
 [tool.poetry.dependencies]
 click = "^8.0.3"
